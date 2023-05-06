@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
+#include <string.h>
 #include "linkedlist.h"
 
-Node *createNode(int data, struct Node *next, struct Node *prev) {
-  struct Node *node = (struct Node *) malloc(sizeof(struct Node));
+Node *createNode(int data, Node *next, Node *prev) {
+  Node *node = (Node *) malloc(sizeof(Node));
   node->next = next;
   node->prev = prev;
   node->data = data;
@@ -11,15 +13,18 @@ Node *createNode(int data, struct Node *next, struct Node *prev) {
 }
 
 LinkedList *createLinkedList() {
-    LinkedList *list = (LinkedList *) malloc(sizeof(struct LinkedList));
+    LinkedList *list = (LinkedList *) malloc(sizeof(LinkedList));
     list->first = NULL;
     list->last = NULL;
     list->size = 0;
     return list;
 }
 
-Node* getNodeAtPos(LinkedList *list, int pos) {
-    Node* temp = list->first;
+Node *getNodeAtPos(LinkedList *list, int pos) {
+    if (pos < 0 || pos >= list->size) {
+        return NULL;
+    }
+    Node *temp = list->first;
     for (int i = 0; i < pos; i++) {
         temp = temp->next;
     }
@@ -39,7 +44,7 @@ void addFirst(LinkedList *list, int data) {
     list->size++;
 }
 
-void addLast(struct LinkedList *list, int data) {
+void addLast(LinkedList *list, int data) {
   if (list->size == 0) {
     addFirst(list, data);
   } else {
@@ -49,26 +54,27 @@ void addLast(struct LinkedList *list, int data) {
     list->size++;
   }
 }
-void insert(struct LinkedList *list, int pos, int data) {
-  if (list->size == 0) {
-    addFirst(list, data);
-  } else if (pos == list->size) {
-    addLast(list, data);
-  } else {
-    struct Node *temp = list->first;
-    int index = 0;
-    while (temp != NULL) {
-      if (index == pos) {
-        struct Node *node = createNode(data, temp, temp->prev);
-        temp->prev->next = node; 
-        temp->prev = node;
-        break;
-      }
-      temp = temp->next;
-      index++;
+
+void insert(LinkedList *list, int pos, int data) {
+    if (pos == 0) {
+        addFirst(list, data);
+    } else if (pos == list->size) {
+        addLast(list, data);
+    } else if (pos > 0 && pos < list->size) {
+        struct Node *temp = list->first;
+        int index = 0;
+        while (temp != NULL) {
+            if (index == pos) {
+                struct Node *node = createNode(data, temp, temp->prev);
+                temp->prev->next = node; 
+                temp->prev = node;
+                break;
+            }
+            temp = temp->next;
+            index++;
+        }
+        list->size++;
     }
-    list->size++;
-  }
 }
 
 int removeFirst(LinkedList *list) {
@@ -134,19 +140,136 @@ int removeNode(LinkedList *list, int pos) {
     return data;
 }
 
+bool removeByInt(LinkedList *list, int data) {
+    int index = 0;
+    Node *temp = list->first;
+    int oldSize = list->size;
+    while (temp != NULL) {
+        if (temp->data == data) {
+            removeNode(list, index);
+            break;
+        } else {
+            index++;
+        }
+        temp = temp->next;
+    }
+    return list->size != oldSize;
+}
+
+
 int get(LinkedList *list, int pos) {
     return getNodeAtPos(list, pos)->data;
 }
 
+int indexOf(LinkedList *list, int data) {
+    Node *temp = list->first;
+    int index = 0;
+    while (temp != NULL) {
+        if (temp->data == data) {
+            return index;
+        }
+        temp = temp->next;
+        index++;
+    }
+    return -1;
+}
 
+int indexOfStartingAt(LinkedList *list, int data, int pos) {
+    if (pos < 0 || pos >= list->size) {
+        return -1;
+    }
+    Node *temp = list->first;
+    int index = 0;
+    while (temp != NULL) {
+        if (index >= pos) {
+            if (temp->data == data) {
+                return index;
+            }
+        }
+        temp = temp->next;
+        index++;
+    }
+    return -1;
+}
 
-void printList(struct LinkedList *list) {
-  struct Node *temp = list->first;
-  printf("[%d", temp->data);
-  temp = temp->next;
-  while (temp != NULL) {
-    printf(", %d", temp->data);
-    temp = temp->next;
-  }
-  printf("]");
+int set(LinkedList *list, int pos, int data) {
+    Node *node = getNodeAtPos(list, pos);
+    int oldData = node->data;
+    node->data = data;
+    return oldData;
+}
+
+LinkedList *getSubList(LinkedList *list, int start, int stop) {
+    if (start < 0 || start > list->size || stop < start || stop > list->size) {
+           return NULL;
+    }
+    LinkedList *subList = createLinkedList();
+    Node *temp = list->first;
+    for (int i = 0; i < stop; i++) {
+        if (i >= start) {
+            addLast(subList, temp->data);
+        }
+        temp = temp->next;
+    }
+    return subList;
+}
+
+bool equals(LinkedList *list1, LinkedList *list2) {
+    if (list1->size != list2->size) {
+        return false;
+    }
+    Node *temp1 = list1->first;
+    Node *temp2 = list2->first;
+    while (temp1 != NULL) {
+        if (temp1->data != temp2->data) {
+            return false;
+        }
+        temp1 = temp1->next;
+        temp2 = temp2->next;
+    }
+    return true;
+}
+
+void makeEmpty(LinkedList *list) {
+    Node *temp = list->first;
+    while (temp != NULL) {
+        Node *prevNode = temp;
+        temp = temp->next;
+        free(prevNode);
+    }
+    list->first = NULL;
+    list->last = NULL;
+    list->size = 0;
+}
+
+void destroyList(LinkedList *list) {
+    Node *temp = list->first;
+    while (temp != NULL) {
+        Node *prevNode = temp;
+        temp = temp->next;
+        free(prevNode);
+    }
+    free(list);
+}
+
+void removeRange(LinkedList *list, int start, int stop) {
+    if (start == 0) {
+        for (int i = 0; i < stop; i++) {
+            removeFirst(list);
+        }
+    }
+}
+
+void printList(LinkedList *list) {
+    Node *temp = list->first;
+    printf("[");
+    if (list->first != NULL) {
+        printf("%d", temp->data);
+        temp = temp->next;
+        while (temp != NULL) {
+            printf(", %d", temp->data);
+            temp = temp->next;
+        }
+    }
+    printf("]");
 }

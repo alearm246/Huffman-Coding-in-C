@@ -2,6 +2,7 @@ all: final
 
 final: main.o linkedlist.o
 	gcc main.o linkedlist.o -o final
+	final.exe
 
 main.o: main.c
 	gcc -c main.c
