@@ -118,7 +118,7 @@ int removeLast(LinkedList *list) {
 }
 
 int removeNode(LinkedList *list, int pos) {
-    if (pos < 0 || pos >= list->size) {
+    if (pos < 0 || pos >= list->size || list->size == 0) {
         return -1;
     }
     int data;
