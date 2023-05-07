@@ -11,3 +11,4 @@ int dequeue(PriorityQueue *queue);
 int peek(PriorityQueue *queue);
 bool isEmpty(PriorityQueue *queue);
 int size(PriorityQueue *queue);
+void destroyPriorityQueue(PriorityQueue *queue);

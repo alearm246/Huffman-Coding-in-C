@@ -1,3 +1,5 @@
+#ifndef LINKEDLIST_H
+#define LINKEDLIST_H
 #include <stdbool.h>
 
 typedef struct Node Node;
@@ -13,6 +15,11 @@ typedef struct LinkedList {
     Node *last;
     int size;
 } LinkedList;
+
+typedef struct LinkedListIterator {
+    LinkedList *list;
+    Node *currentNode;
+} LinkedListIterator;
 
 void insert(LinkedList *list, int pos, int data);
 void addFirst(LinkedList *list, int data);
@@ -34,3 +41,9 @@ bool equals(LinkedList *list1, LinkedList *list2);
 void makeEmpty(LinkedList *list);
 void destroyList(LinkedList *list);
 Node *getNodeAtPos(LinkedList *list, int pos);
+LinkedListIterator *createLinkedListIterator(LinkedList *list);
+bool hasNext(LinkedListIterator *iterator);
+int next(LinkedListIterator *iterator);
+void resetIterator(LinkedListIterator *iterator);
+
+#endif // LINKEDLIST_H

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "linkedlist.h"
+#include "priorityqueue.h"
 
 void populateList(LinkedList *list, int nums[], int size) {
     for (int i = 0; i < size; i++) {
@@ -9,9 +10,335 @@ void populateList(LinkedList *list, int nums[], int size) {
 }
 
 void linkedListTests();
+void priorityQueueTests();
 
 int main() {
-    linkedListTests();
+    // linkedListTests();
+    // priorityQueueTests();
+    PriorityQueue *queue = createPriorityQueue();
+    enqueue(queue, 5);
+    enqueue(queue, 20);
+    enqueue(queue, 12);
+    enqueue(queue, 1);
+    enqueue(queue, 17);
+    enqueue(queue, 12);
+    enqueue(queue, 12);
+    while (!isEmpty(queue)) {
+        printf("%d\n", dequeue(queue));
+    }
+}
+
+void priorityQueueTests() {
+    //Test 1: Creating an empty priority queue
+    PriorityQueue *queue1 = createPriorityQueue();
+    if (queue1 != NULL && queue1->con != NULL && queue1->con->first == NULL &&
+        queue1->con->last == NULL && queue1->con->size == 0) {
+        printf("Passed test 1: Creating an empty priority queue\n");
+    } else {
+        printf("Failed test 1: Creating an empty priority queue\n");
+    }
+    destroyPriorityQueue(queue1);
+
+    //Test 2: Enqueue a single element
+    PriorityQueue *queue2 = createPriorityQueue();
+    enqueue(queue2, 5);
+    if (queue2 != NULL && queue2->con != NULL && queue2->con->first != NULL &&
+        queue2->con->first->data == 5 && queue2->con->last->data == 5 &&
+        queue2->con->size == 1) {
+        printf("Passed test 2: Enqueue a single element\n");
+    } else {
+        printf("Failed test 2: Enqueue a single element\n");
+    }
+    destroyPriorityQueue(queue2);
+
+    //Test 3: Enqueue elements in ascending order
+    PriorityQueue *queue3 = createPriorityQueue();
+    enqueue(queue3, 3);
+    enqueue(queue3, 5);
+    enqueue(queue3, 7);
+    if (queue3 != NULL && queue3->con != NULL && queue3->con->first != NULL &&
+        queue3->con->first->data == 3 && queue3->con->last->data == 7 &&
+        queue3->con->size == 3) {
+        printf("Passed test 3: Enqueue elements in ascending order\n");
+    } else {
+        printf("Failed test 3: Enqueue elements in ascending order\n");
+    }
+    destroyPriorityQueue(queue3);
+
+    //Test 4: Enqueue elements in descending order
+    PriorityQueue *queue4 = createPriorityQueue();
+    enqueue(queue4, 7);
+    enqueue(queue4, 5);
+    enqueue(queue4, 3);
+    if (queue4 != NULL && queue4->con != NULL && queue4->con->first != NULL &&
+        queue4->con->first->data == 3 && queue4->con->last->data == 7 &&
+        queue4->con->size == 3) {
+        printf("Passed test 4: Enqueue elements in descending order\n");
+    } else {
+        printf("Failed test 4: Enqueue elements in descending order\n");
+    }
+    destroyPriorityQueue(queue4);
+
+    //Test 5: Enqueue elements with the same value
+    PriorityQueue *queue5 = createPriorityQueue();
+    enqueue(queue5, 5);
+    enqueue(queue5, 5);
+    enqueue(queue5, 5);
+    if (queue5 != NULL && queue5->con != NULL && queue5->con->first != NULL &&
+        queue5->con->first->data == 5 && queue5->con->last->data == 5 &&
+        queue5->con->size == 3) {
+        printf("Passed test 5: Enqueue elements with the same value\n");
+    } else {
+        printf("Failed test 5: Enqueue elements with the same value\n");
+    }
+    destroyPriorityQueue(queue5);
+
+    //Test 6: Enqueue elements in a mix of order and same values
+    PriorityQueue *queue6 = createPriorityQueue();
+    enqueue(queue6, 7);
+    enqueue(queue6, 5);
+    enqueue(queue6, 9);
+    enqueue(queue6, 3);
+    enqueue(queue6, 5);
+    if (queue6 != NULL && queue6->con != NULL && queue6->con->first != NULL &&
+        queue6->con->first->data == 3 && queue6->con->last->data == 9 &&
+        queue6->con->size == 5) {
+        printf("Passed test 6: Enqueue elements in a mix of order and same values\n");
+    } else {
+        printf("Failed test 6: Enqueue elements in a mix of order and same values\n");
+    }
+    destroyPriorityQueue(queue6);
+
+    //Test 7: Dequeue from an empty priority queue
+    PriorityQueue *queue7 = createPriorityQueue();
+    int dequeuedValue7 = dequeue(queue7);
+    if (dequeuedValue7 == -1) {
+        printf("Passed test 7: Dequeue from an empty priority queue\n");
+    } else {
+        printf("Failed test 7: Dequeue from an empty priority queue\n");
+    }
+    destroyPriorityQueue(queue7);
+
+    //Test 8: Dequeue a single element
+    PriorityQueue *queue8 = createPriorityQueue();
+    enqueue(queue8, 5);
+    int dequeuedValue8 = dequeue(queue8);
+    if (dequeuedValue8 == 5 && queue8->con->first == NULL && queue8->con->last == NULL && queue8->con->size == 0) {
+        printf("Passed test 8: Dequeue a single element\n");
+    } else {
+        printf("Failed test 8: Dequeue a single element\n");
+    }
+    destroyPriorityQueue(queue8);
+
+    //Test 9: Dequeue multiple elements in correct order
+    PriorityQueue *queue9 = createPriorityQueue();
+    enqueue(queue9, 3);
+    enqueue(queue9, 7);
+    enqueue(queue9, 5);
+    int dequeuedValue9_1 = dequeue(queue9);
+    int dequeuedValue9_2 = dequeue(queue9);
+    int dequeuedValue9_3 = dequeue(queue9);
+    if (dequeuedValue9_1 == 3 && dequeuedValue9_2 == 5 && dequeuedValue9_3 == 7) {
+        printf("Passed test 9: Dequeue multiple elements in correct order\n");
+    } else {
+        printf("Failed test 9: Dequeue multiple elements in correct order\n");
+    }
+    destroyPriorityQueue(queue9);
+
+    //Test 10: Dequeue elements with same value
+    PriorityQueue *queue10 = createPriorityQueue();
+    enqueue(queue10, 5);
+    enqueue(queue10, 5);
+    enqueue(queue10, 5);
+    int dequeuedValue10_1 = dequeue(queue10);
+    int dequeuedValue10_2 = dequeue(queue10);
+    int dequeuedValue10_3 = dequeue(queue10);
+    if (dequeuedValue10_1 == 5 && dequeuedValue10_2 == 5 && dequeuedValue10_3 == 5) {
+        printf("Passed test 10: Dequeue elements with same value\n");
+    } else {
+        printf("Failed test 10: Dequeue elements with same value\n");
+    }
+    destroyPriorityQueue(queue10);
+
+    //Test 11: Dequeue elements in a mix of order and same values
+    PriorityQueue *queue11 = createPriorityQueue();
+    enqueue(queue11, 9);
+    enqueue(queue11, 5);
+    enqueue(queue11, 3);
+    enqueue(queue11, 7);
+    enqueue(queue11, 5);
+    int dequeuedValue11_1 = dequeue(queue11);
+    int dequeuedValue11_2 = dequeue(queue11);
+    int dequeuedValue11_3 = dequeue(queue11);
+    int dequeuedValue11_4 = dequeue(queue11);
+    int dequeuedValue11_5 = dequeue(queue11);
+    if (dequeuedValue11_1 == 3 && dequeuedValue11_2 == 5 && dequeuedValue11_3 == 5 && dequeuedValue11_4 == 7 && dequeuedValue11_5 == 9) {
+        printf("Passed test 11: Dequeue elements in a mix of order and same values\n");
+    } else {
+        printf("Failed test 11: Dequeue elements in a mix of order and same values\n");
+    }
+    destroyPriorityQueue(queue11);
+
+    //Test 12: Peek at an empty priority queue
+    PriorityQueue *queue12 = createPriorityQueue();
+    int peekValue12 = peek(queue12);
+    if (peekValue12 == -1) {
+        printf("Passed test 12: Peek at an empty priority queue\n");
+    } else {
+        printf("Failed test 12: Peek at an empty priority queue\n");
+    }
+    destroyPriorityQueue(queue12);
+
+    //Test 13: Peek at a priority queue with a single element
+    PriorityQueue *queue13 = createPriorityQueue();
+    enqueue(queue13, 5);
+    int peekValue13 = peek(queue13);
+    if (peekValue13 == 5) {
+        printf("Passed test 13: Peek at a priority queue with a single element\n");
+    } else {
+        printf("Failed test 13: Peek at a priority queue with a single element\n");
+    }
+    destroyPriorityQueue(queue13);
+
+    //Test 14: Peek at a priority queue with multiple elements
+    PriorityQueue *queue14 = createPriorityQueue();
+    enqueue(queue14, 3);
+    enqueue(queue14, 7);
+    enqueue(queue14, 5);
+    int peekValue14 = peek(queue14);
+    if (peekValue14 == 3) {
+        printf("Passed test 14: Peek at a priority queue with multiple elements\n");
+    } else {
+        printf("Failed test 14: Peek at a priority queue with multiple elements\n");
+    }
+    destroyPriorityQueue(queue14);
+
+    //Test 15: Peek at a priority queue with elements of the same value
+    PriorityQueue *queue15 = createPriorityQueue();
+    enqueue(queue15, 5);
+    enqueue(queue15, 5);
+    enqueue(queue15, 5);
+    int peekValue15 = peek(queue15);
+    if (peekValue15 == 5) {
+        printf("Passed test 15: Peek at a priority queue with elements of the same value\n");
+    } else {
+        printf("Failed test 15: Peek at a priority queue with elements of the same value\n");
+    }
+    destroyPriorityQueue(queue15);
+
+    //Test 16: Peek at a priority queue with a mix of order and same values
+    PriorityQueue *queue16 = createPriorityQueue();
+    enqueue(queue16, 9);
+    enqueue(queue16, 5);
+    enqueue(queue16, 3);
+    enqueue(queue16, 7);
+    enqueue(queue16, 5);
+    int peekValue16 = peek(queue16);
+    if (peekValue16 == 3) {
+        printf("Passed test 16: Peek at a priority queue with a mix of order and same values\n");
+    } else {
+        printf("Failed test 16: Peek at a priority queue with a mix of order and same values\n");
+    }
+    destroyPriorityQueue(queue16);
+
+    //Test 17: Check if an empty priority queue is empty
+    PriorityQueue *queue17 = createPriorityQueue();
+    bool emptyResult17 = isEmpty(queue17);
+    if (emptyResult17) {
+        printf("Passed test 17: Check if an empty priority queue is empty\n");
+    } else {
+        printf("Failed test 17: Check if an empty priority queue is empty\n");
+    }
+    destroyPriorityQueue(queue17);
+
+    //Test 18: Check if a priority queue with a single element is empty
+    PriorityQueue *queue18 = createPriorityQueue();
+    enqueue(queue18, 5);
+    bool emptyResult18 = isEmpty(queue18);
+    if (!emptyResult18) {
+        printf("Passed test 18: Check if a priority queue with a single element is empty\n");
+    } else {
+        printf("Failed test 18: Check if a priority queue with a single element is empty\n");
+    }
+    destroyPriorityQueue(queue18);
+
+    //Test 19: Check if a priority queue with multiple elements is empty
+    PriorityQueue *queue19 = createPriorityQueue();
+    enqueue(queue19, 3);
+    enqueue(queue19, 7);
+    enqueue(queue19, 5);
+    bool emptyResult19 = isEmpty(queue19);
+    if (!emptyResult19) {
+        printf("Passed test 19: Check if a priority queue with multiple elements is empty\n");
+    } else {
+        printf("Failed test 19: Check if a priority queue with multiple elements is empty\n");
+    }
+    destroyPriorityQueue(queue19);
+
+    //Test 20: Check if a priority queue becomes empty after dequeueing all elements
+    PriorityQueue *queue20 = createPriorityQueue();
+    enqueue(queue20, 3);
+    enqueue(queue20, 7);
+    enqueue(queue20, 5);
+    dequeue(queue20);
+    dequeue(queue20);
+    dequeue(queue20);
+    bool emptyResult20 = isEmpty(queue20);
+    if (emptyResult20) {
+        printf("Passed test 20: Check if a priority queue becomes empty after dequeueing all elements\n");
+    } else {
+        printf("Failed test 20: Check if a priority queue becomes empty after dequeueing all elements\n");
+    }
+    destroyPriorityQueue(queue20);
+
+    //Test 21: Check the size of an empty priority queue
+    PriorityQueue *queue21 = createPriorityQueue();
+    int sizeResult21 = size(queue21);
+    if (sizeResult21 == 0) {
+        printf("Passed test 21: Check the size of an empty priority queue\n");
+    } else {
+        printf("Failed test 21: Check the size of an empty priority queue\n");
+    }
+    destroyPriorityQueue(queue21);
+
+    //Test 22: Check the size of a priority queue with a single element
+    PriorityQueue *queue22 = createPriorityQueue();
+    enqueue(queue22, 5);
+    int sizeResult22 = size(queue22);
+    if (sizeResult22 == 1) {
+        printf("Passed test 22: Check the size of a priority queue with a single element\n");
+    } else {
+        printf("Failed test 22: Check the size of a priority queue with a single element\n");
+    }
+    destroyPriorityQueue(queue22);
+
+    //Test 23: Check the size of a priority queue with multiple elements
+    PriorityQueue *queue23 = createPriorityQueue();
+    enqueue(queue23, 3);
+    enqueue(queue23, 5);
+    enqueue(queue23, 7);
+    int sizeResult23 = size(queue23);
+    if (sizeResult23 == 3) {
+        printf("Passed test 23: Check the size of a priority queue with multiple elements\n");
+    } else {
+        printf("Failed test 23: Check the size of a priority queue with multiple elements\n");
+    }
+    destroyPriorityQueue(queue23);
+
+    //Test 24: Check the size of a priority queue after dequeueing some elements
+    PriorityQueue *queue24 = createPriorityQueue();
+    enqueue(queue24, 3);
+    enqueue(queue24, 5);
+    enqueue(queue24, 7);
+    dequeue(queue24);
+    int sizeResult24 = size(queue24);
+    if (sizeResult24 == 2) {
+        printf("Passed test 24: Check the size of a priority queue after dequeueing some elements\n");
+    } else {
+        printf("Failed test 24: Check the size of a priority queue after dequeueing some elements\n");
+    }
+    destroyPriorityQueue(queue24);
+
 }
 
 void linkedListTests() {
@@ -507,4 +834,544 @@ void linkedListTests() {
         printf("Failed test 46: Removing a non-existent value should return false and not change the list\n");
     }
     destroyList(list46);
+
+    // Test 47: Getting data at position 0 in a list of size 1 returns the correct data.
+    int num47 = 5;
+    LinkedList *list47 = createLinkedList();
+    addFirst(list47, num47);
+    if (get(list47, 0) == num47) {
+        printf("Passed test 47: Getting data at position 0 in a list of size 1 returns the correct data.\n");
+    } else {
+        printf("Failed test 47: Getting data at position 0 in a list of size 1 does not return the correct data.\n");
+    }
+    destroyList(list47);
+
+    // Test 48: Getting data at the last position in a list of size 3 returns the correct data.
+    int nums48[] = {1, 2, 3};
+    LinkedList *list48 = createLinkedList();
+    populateList(list48, nums48, 3);
+    if (get(list48, 2) == nums48[2]) {
+        printf("Passed test 48: Getting data at the last position in a list of size 3 returns the correct data.\n");
+    } else {
+        printf("Failed test 48: Getting data at the last position in a list of size 3 does not return the correct data.\n");
+    }
+    destroyList(list48);
+
+    // Test 49: Getting data at a negative position returns -1.
+    int nums49[] = {1, 2, 3};
+    LinkedList *list49 = createLinkedList();
+    populateList(list49, nums49, 3);
+    if (get(list49, -1) == -1) {
+        printf("Passed test 49: Getting data at a negative position returns -1.\n");
+    } else {
+        printf("Failed test 49: Getting data at a negative position does not return -1.\n");
+    }
+    destroyList(list49);
+
+    // Test 50: Getting data at a position larger than the list size returns -1.
+    int nums50[] = {1, 2, 3};
+    LinkedList *list50 = createLinkedList();
+    populateList(list50, nums50, 3);
+    if (get(list50, 5) == -1) {
+        printf("Passed test 50: Getting data at a position larger than the list size returns -1.\n");
+    } else {
+        printf("Failed test 50: Getting data at a position larger than the list size does not return -1.\n");
+    }
+    destroyList(list50);
+
+    // Test 50: Return index of a single element in list
+    int num200 = 5;
+    LinkedList *list200 = createLinkedList();
+    addLast(list200, num200);
+    if (indexOf(list200, num200) == 0) {
+        printf("Passed test 50: Index of single element in list is correct\n");
+    } else {
+        printf("Failed test 50: Index of single element in list is not correct\n");
+    }
+    destroyList(list200);
+
+    // Test 51: Return index of first element in list with multiple elements
+    int nums51[] = {3, 5, 7, 9, 11};
+    LinkedList *list51 = createLinkedList();
+    populateList(list51, nums51, 5);
+    if (indexOf(list51, nums51[0]) == 0) {
+        printf("Passed test 51: Index of first element in list with multiple elements is correct\n");
+    } else {
+        printf("Failed test 51: Index of first element in list with multiple elements is not correct\n");
+    }
+    destroyList(list51);
+
+    // Test 52: Return index of last element in list with multiple elements
+    int nums52[] = {3, 5, 7, 9, 11};
+    LinkedList *list52 = createLinkedList();
+    populateList(list52, nums52, 5);
+    if (indexOf(list52, nums52[4]) == 4) {
+        printf("Passed test 52: Index of last element in list with multiple elements is correct\n");
+    } else {
+        printf("Failed test 52: Index of last element in list with multiple elements is not correct\n");
+    }
+    destroyList(list52);
+
+    // Test 53: Return -1 for element not in list
+    int nums53[] = {3, 5, 7, 9, 11};
+    LinkedList *list53 = createLinkedList();
+    populateList(list53, nums53, 5);
+    if (indexOf(list53, 4) == -1) {
+        printf("Passed test 53: Index of element not in list is -1\n");
+    } else {
+        printf("Failed test 53: Index of element not in list is not -1\n");
+    }
+    destroyList(list53);
+
+    // Test 54: Return -1 for empty list
+    LinkedList *list54 = createLinkedList();
+    if (indexOf(list54, 5) == -1) {
+        printf("Passed test 54: Index of element in empty list is -1\n");
+    } else {
+        printf("Failed test 54: Index of element in empty list is not -1\n");
+    }
+    destroyList(list54);
+
+    // Test 54: Getting an element from the middle of the list
+    int nums55[] = {1, 2, 3, 4, 5};
+    LinkedList *list55 = createLinkedList();
+    populateList(list55, nums55, 5);
+    int data55 = get(list55, 2);
+    if (data55 == 3) {
+        printf("Passed test 54: Got an element from the middle of the list\n");
+    } else {
+        printf("Failed test 54: Did not get the correct element from the middle of the list\n");
+    }
+    destroyList(list55);
+
+    // Test 57: Search for an element in an empty list should return -1
+    LinkedList *list57 = createLinkedList();
+    int index57 = indexOfStartingAt(list57, 5, 0);
+    if (index57 == -1) {
+        printf("Passed test 57: Search for an element in an empty list returns -1\n");
+    } else {
+        printf("Failed test 57: Search for an element in an empty list did not return -1\n");
+    }
+    destroyList(list57);
+
+    // Test 58: Search for an element at position 0 in a list with one element
+    LinkedList *list58 = createLinkedList();
+    insert(list58, 0, 5);
+    int index58 = indexOfStartingAt(list58, 5, 0);
+    if (index58 == 0) {
+        printf("Passed test 58: Search for an element at position 0 in a list with one element returns 0\n");
+    } else {
+        printf("Failed test 58: Search for an element at position 0 in a list with one element did not return 0\n");
+    }
+    destroyList(list58);
+
+    // Test 59: Search for an element at the end of a list with multiple elements
+    int nums59[] = {1, 2, 3, 4, 5};
+    LinkedList *list59 = createLinkedList();
+    populateList(list59, nums59, 5);
+    int index59 = indexOfStartingAt(list59, 5, 4);
+    if (index59 == 4) {
+        printf("Passed test 59: Search for an element at the end of a list with multiple elements returns correct index\n");
+    } else {
+        printf("Failed test 59: Search for an element at the end of a list with multiple elements did not return correct index\n");
+    }
+    destroyList(list59);
+
+    // Test 60: Search for an element that is not in the list
+    int nums60[] = {1, 2, 3, 4, 5};
+    LinkedList *list60 = createLinkedList();
+    populateList(list60, nums60, 5);
+    int index60 = indexOfStartingAt(list60, 6, 0);
+    if (index60 == -1) {
+        printf("Passed test 60: Search for an element that is not in the list returns -1\n");
+    } else {
+        printf("Failed test 60: Search for an element that is not in the list did not return -1\n");
+    }
+    destroyList(list60);
+
+    // Test 61: Search for an element in the middle of a list with multiple elements
+    int nums61[] = {1, 2, 3, 4, 5};
+    LinkedList *list61 = createLinkedList();
+    populateList(list61, nums61, 5);
+    int index61 = indexOfStartingAt(list61, 3, 1);
+    if (index61 == 2) {
+        printf("Passed test 61: Search for an element in the middle of a list with multiple elements returns correct index\n");
+    } else {
+        printf("Failed test 61: Search for an element in the middle of a list with multiple elements did not return correct index\n");
+    }
+    destroyList(list61);
+
+    // Test 62: Set a node at position 0 in an empty list
+    LinkedList *list900 = createLinkedList();
+    int num900 = set(list900, 0, 5);
+    if (num900 == -1 && list900->size == 0) {
+        printf("Passed test 62: Set a node at position 0 in an empty list\n");
+    } else {
+        printf("Failed test 62: Set a node at position 0 in an empty list\n");
+    }
+    destroyList(list900);
+
+    // Test 63: Set a node at position 0 in a list with one node
+    LinkedList *list62 = createLinkedList();
+    addLast(list62, 10);
+    int num62 = set(list62, 0, 5);
+    if (num62 == 10 && list62->first->data == 5 && list62->last->data == 5 && list62->size == 1) {
+        printf("Passed test 63: Set a node at position 0 in a list with one node\n");
+    } else {
+        printf("Failed test 63: Set a node at position 0 in a list with one node\n");
+    }
+    destroyList(list62);
+
+    // Test 64: Set a node at position 0 in a list with multiple nodes
+    LinkedList *list63 = createLinkedList();
+    int nums63[] = {1, 2, 3};
+    populateList(list63, nums63, 3);
+    int num63 = set(list63, 0, 5);
+    if (num63 == 1 && list63->first->data == 5 && list63->last->data == 3 && list63->size == 3) {
+        printf("Passed test 64: Set a node at position 0 in a list with multiple nodes\n");
+    } else {
+        printf("Failed test 64: Set a node at position 0 in a list with multiple nodes\n");
+    }
+    destroyList(list63);
+
+    // Test 65: Set a node at the last position in a list with multiple nodes
+    LinkedList *list64 = createLinkedList();
+    int nums64[] = {1, 2, 3};
+    populateList(list64, nums64, 3);
+    int num64 = set(list64, 2, 5);
+    if (num64 == 3 && list64->first->data == 1 && list64->last->data == 5 && list64->size == 3) {
+        printf("Passed test 65: Set a node at the last position in a list with multiple nodes\n");
+    } else {
+        printf("Failed test 65: Set a node at the last position in a list with multiple nodes\n");
+    }
+    destroyList(list64);
+
+    // Test 66: Set a node at the middle position in a list with multiple nodes
+    LinkedList *list65 = createLinkedList();
+    int nums65[] = {1, 2, 3, 4, 5};
+    populateList(list65, nums65, 5);
+    int num65 = set(list65, 2, 10);
+    if (num65 == 3 && list65->first->data == 1 && list65->last->data == 5 && list65->size == 5 && list65->first->next->next->data == 10) {
+        printf("Passed test 66: Set a node at the middle position in a list with multiple nodes\n");
+    } else {
+        printf("Failed test 66: Set a node at the middle position in a list with multiple nodes\n");
+    }
+    destroyList(list65);
+
+    // Test 67: Set a node at an invalid position in a list with multiple nodes
+    LinkedList *list66 = createLinkedList();
+    int nums66[] = {10, 20, 30, 40, 50};
+    populateList(list66, nums66, 5);
+    int num66 = set(list66, -1, 10);
+    if (num66 == -1) {
+        printf("Passed test 67: Set a node with a invalid position in a list with multiple nodes\n");
+    } else {
+        printf("Failed test 67: Set a node with a invalid position in a list with multiple nodes\n");
+    }
+
+    // Test 68: getSubList() returns NULL when given an invalid start index
+    LinkedList *list68 = createLinkedList();
+    addLast(list68, 10);
+    addLast(list68, 20);
+    addLast(list68, 30);
+    LinkedList *subList68 = getSubList(list68, -1, 2);
+    if (subList68 == NULL) {
+        printf("Passed test 68: getSubList() returns NULL when given an invalid start index\n");
+    } else {
+        printf("Failed test 68: getSubList() should return NULL when given an invalid start index\n");
+    }
+    destroyList(list68);
+    if (subList68 != NULL) {
+        destroyList(subList68);
+    }
+
+    //Test 69: getSubList() returns NULL when given an invalid stop index
+    LinkedList *list69 = createLinkedList();
+    addLast(list69, 10);
+    addLast(list69, 20);
+    addLast(list69, 30);
+    LinkedList *subList69 = getSubList(list69, 1, 4);
+    if (subList69 == NULL) {
+        printf("Passed test 69: getSubList() returns NULL when given an invalid stop index\n");
+    } else {
+        printf("Failed test 69: getSubList() should return NULL when given an invalid stop index\n");
+    }
+    destroyList(list69);
+    if (subList69 != NULL) {
+        destroyList(subList69);
+    }
+
+    // Test 70: getSubList() returns NULL when given an invalid range
+    LinkedList *list70 = createLinkedList();
+    addLast(list70, 10);
+    addLast(list70, 20);
+    addLast(list70, 30);
+    LinkedList *subList70 = getSubList(list70, 2, 1);
+    if (subList70 == NULL) {
+        printf("Passed test 70: getSubList() returns NULL when given an invalid range\n");
+    } else {
+        printf("Failed test 70: getSubList() should return NULL when given an invalid range\n");
+    }
+    destroyList(list70);
+    if (subList70 != NULL) {
+        destroyList(subList70);
+    }
+
+    // Test 71: getSubList() returns the correct sublist when given a valid range
+    LinkedList *list71 = createLinkedList();
+    addLast(list71, 10);
+    addLast(list71, 20);
+    addLast(list71, 30);
+    LinkedList *subList71 = getSubList(list71, 1, 2);
+    if (subList71 != NULL && subList71->size == 1 && subList71->first->data == 20) {
+        printf("Passed test 71: getSubList() returns the correct sublist when given a valid range\n");
+    } else {
+        printf("Failed test 71: getSubList() should return the correct sublist when given a valid range\n");
+    }
+    destroyList(list71);
+    if (subList71 != NULL) {
+        destroyList(subList71);
+    }
+
+    // Test 72: getSubList() returns the entire list when given a valid range that covers the entire list
+    LinkedList *list72 = createLinkedList();
+    addLast(list72, 10);
+    addLast(list72, 20);
+    addLast(list72, 30);
+    LinkedList *subList72 = getSubList(list72, 0, 3);
+    if (subList72 != NULL && subList72->size == 3 && subList72->first->data == 10 && subList72->last->data == 30) {
+        printf("Passed test 72: getSubList() returns the entire list when given a valid range that covers the entire list\n");
+    } else {
+        printf("Failed test 72: getSubList() should return the entire list when given a valid range that covers the entire list\n");
+    }
+    destroyList(list72);
+    if (subList72 != NULL) {
+        destroyList(subList72);
+    }
+
+    // Test 73: equals returns true for two empty lists
+    LinkedList *list73_1 = createLinkedList();
+    LinkedList *list73_2 = createLinkedList();
+    if (equals(list73_1, list73_2)) {
+        printf("Passed test 73: equals returns true for two empty lists\n");
+    } else {
+        printf("Failed test 73: equals returns true for two empty lists\n");
+    }
+    destroyList(list73_1);
+    destroyList(list73_2);
+
+    // Test 74: equals returns false for empty list and non-empty list
+    LinkedList *list74_1 = createLinkedList();
+    LinkedList *list74_2 = createLinkedList();
+    addLast(list74_2, 5);
+    if (!equals(list74_1, list74_2)) {
+        printf("Passed test 74: equals returns false for empty list and non-empty list\n");
+    } else {
+        printf("Failed test 74: equals returns false for empty list and non-empty list\n");
+    }
+    destroyList(list74_1);
+    destroyList(list74_2);
+
+    // Test 75: equals returns true for two lists with the same elements in the same order
+    LinkedList *list75_1 = createLinkedList();
+    LinkedList *list75_2 = createLinkedList();
+    addLast(list75_1, 5);
+    addLast(list75_1, 7);
+    addLast(list75_1, 8);
+    addLast(list75_2, 5);
+    addLast(list75_2, 7);
+    addLast(list75_2, 8);
+    if (equals(list75_1, list75_2)) {
+        printf("Passed test 75: equals returns true for two lists with the same elements in the same order\n");
+    } else {
+        printf("Failed test 75: equals returns true for two lists with the same elements in the same order\n");
+    }
+    destroyList(list75_1);
+    destroyList(list75_2);
+
+    // Test 76: equals returns false for two lists with the same elements in a different order
+    LinkedList *list76_1 = createLinkedList();
+    LinkedList *list76_2 = createLinkedList();
+    addLast(list76_1, 5);
+    addLast(list76_1, 7);
+    addLast(list76_1, 8);
+    addLast(list76_2, 5);
+    addLast(list76_2, 8);
+    addLast(list76_2, 7);
+    if (!equals(list76_1, list76_2)) {
+        printf("Passed test 76: equals returns false for two lists with the same elements in a different order\n");
+    } else {
+        printf("Failed test 76: equals returns false for two lists with the same elements in a different order\n");
+    }
+    destroyList(list76_1);
+    destroyList(list76_2);
+
+    // Test 77: equals returns false for two lists with different elements
+    LinkedList *list77_1 = createLinkedList();
+    LinkedList *list77_2 = createLinkedList();
+    addLast(list77_1, 5);
+    addLast(list77_1, 7);
+    addLast(list77_1, 8);
+    addLast(list77_2, 5);
+    addLast(list77_2, 7);
+    addLast(list77_2, 9);
+    if (!equals(list77_1, list77_2)) {
+        printf("Passed test 77: equals returns false for two lists with different elements.\n");
+    } else {
+        printf("Failed test 77: equals returns true for two lists with different elements.\n");
+    }
+    destroyList(list77_1);
+    destroyList(list77_2);
+
+    // Test 78: makeEmpty on empty list
+    LinkedList *list78 = createLinkedList();
+    makeEmpty(list78);
+    if (list78->first == NULL && list78->last == NULL && list78->size == 0) {
+        printf("Passed test 78: makeEmpty on empty list\n");
+    } else {
+        printf("Failed test 78: makeEmpty on empty list\n");
+    }
+    destroyList(list78);
+
+    // Test 79: makeEmpty on list with one element
+    LinkedList *list79 = createLinkedList();
+    addLast(list79, 5);
+    makeEmpty(list79);
+    if (list79->first == NULL && list79->last == NULL && list79->size == 0) {
+        printf("Passed test 79: makeEmpty on list with one element\n");
+    } else {
+        printf("Failed test 79: makeEmpty on list with one element\n");
+    }
+    destroyList(list79);
+
+    // Test 80: makeEmpty on list with multiple elements
+    LinkedList *list80 = createLinkedList();
+    addLast(list80, 5);
+    addLast(list80, 7);
+    addLast(list80, 8);
+    makeEmpty(list80);
+    if (list80->first == NULL && list80->last == NULL && list80->size == 0) {
+        printf("Passed test 80: makeEmpty on list with multiple elements\n");
+    } else {
+        printf("Failed test 80: makeEmpty on list with multiple elements\n");
+    }
+    destroyList(list80);
+
+    // Test 81: Removing a range that includes the first element but not the last
+    LinkedList *list81 = createLinkedList();
+    int nums81[] = {5, 7, 8, 10, 12};
+    populateList(list81, nums81, 5);
+    removeRange(list81, 0, 2);
+    int expectedSize81 = 3;
+    int expectedFirst81 = 8;
+    int expectedLast81 = 12;
+    if (list81->first->data == expectedFirst81 && list81->last->data == expectedLast81 && list81->size == expectedSize81) {
+        printf("Passed test 81: Removing a range that includes the first element but not the last\n");
+    } else {
+        printf("Failed test 81: Removing a range that includes the first element but not the last\n");
+    }
+    destroyList(list81);
+
+    // Test 82: Removing a range that includes the last element but not the first
+    LinkedList *list82 = createLinkedList();
+    int nums82[] = {5, 7, 8, 10, 12};
+    populateList(list82, nums82, 5);
+    removeRange(list82, 2, 5);
+    int expectedSize82 = 2;
+    int expectedFirst82 = 5;
+    int expectedLast82 = 7;
+    if (list82->first->data == expectedFirst82 && list82->last->data == expectedLast82 && list82->size == expectedSize82) {
+        printf("Passed test 82: Removing a range that includes the last element but not the first\n");
+    } else {
+        printf("Failed test 82: Removing a range that includes the last element but not the first\n");
+    }
+    destroyList(list82);
+
+    // Test 83: Removing a range in the middle
+    LinkedList *list83 = createLinkedList();
+    int nums83[] = {5, 7, 8, 10, 12};
+    populateList(list83, nums83, 5);
+    removeRange(list83, 1, 4);
+    int expectedSize83 = 2;
+    int expectedFirst83 = 5;
+    int expectedLast83 = 12;
+    if (list83->first->data == expectedFirst83 && list83->last->data == expectedLast83 && list83->size == expectedSize83) {
+        printf("Passed test 83: Removing a range in the middle\n");
+    } else {
+        printf("Failed test 83: Removing a range in the middle\n");
+    }
+    destroyList(list83);
+
+    // Test 84: Removing the entire range
+    LinkedList *list84 = createLinkedList();
+    int nums84[] = {5, 7, 8, 10, 12};
+    populateList(list84, nums84, 5);
+    removeRange(list84, 0, 5);
+    int expectedSize84 = 0;
+    if (list84->first == NULL && list84->last == NULL && list84->size == expectedSize84) {
+        printf("Passed test 84: Removing the entire range\n");
+    } else {
+        printf("Failed test 84: Removing the entire range\n");
+    }
+    destroyList(list84);
+
+    // Test 86: Removing only the first element
+    LinkedList *list86 = createLinkedList();
+    int nums86[] = {5, 7, 8, 10, 12};
+    populateList(list86, nums86, 5);
+    removeRange(list86, 0, 1);
+    int expectedSize86 = 4;
+    int expectedFirst86 = 7;
+    int expectedLast86 = 12;
+    if (list86->first->data == expectedFirst86 && list86->last->data == expectedLast86 && list86->size == expectedSize86) {
+        printf("Passed test 86: Removing only the first element\n");
+    } else {
+        printf("Failed test 86: Removing only the first element\n");
+    }
+    destroyList(list86);
+
+    // Test 87: Removing only the last element
+    LinkedList *list87 = createLinkedList();
+    int nums87[] = {5, 7, 8, 10, 12};
+    populateList(list87, nums87, 5);
+    removeRange(list87, 4, 5);
+    int expectedSize87 = 4;
+    int expectedFirst87 = 5;
+    int expectedLast87 = 10;
+    if (list87->first->data == expectedFirst87 && list87->last->data == expectedLast87 && list87->size == expectedSize87) {
+        printf("Passed test 87: Removing only the last element\n");
+    } else {
+        printf("Failed test 87: Removing only the last element\n");
+    }
+    destroyList(list87);
+
+    // Test 88: Removing only the middle element
+    LinkedList *list88 = createLinkedList();
+    int nums88[] = {5, 7, 8, 10, 12};
+    populateList(list88, nums88, 5);
+    removeRange(list88, 2, 3);
+    int expectedSize88 = 4;
+    int expectedFirst88 = 5;
+    int expectedLast88 = 12;
+    if (list88->first->data == expectedFirst88 && list88->last->data == expectedLast88 && list88->size == expectedSize88) {
+        printf("Passed test 88: Removing only the middle element\n");
+    } else {
+        printf("Failed test 88: Removing only the middle element\n");
+    }
+    destroyList(list88);
+    
+    // Test 85: Removing a range with invalid start and stop values
+    LinkedList *list85 = createLinkedList();
+    int nums85[] = {5, 7, 8, 10, 12};
+    populateList(list85, nums85, 5);
+    removeRange(list85, -2, 7); // Invalid start and stop values
+    int expectedSize85 = 5;
+    int expectedFirst85 = 5;
+    int expectedLast85 = 12;
+    if (list85->first->data == expectedFirst85 && list85->last->data == expectedLast85 && list85->size == expectedSize85) {
+        printf("Passed test 85: Removing a range with invalid start and stop values\n");
+    } else {
+        printf("Failed test 85: Removing a range with invalid start and stop values\n");
+    }
+    destroyList(list85);
 }

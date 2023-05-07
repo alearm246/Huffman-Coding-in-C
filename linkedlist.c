@@ -158,6 +158,9 @@ bool removeByInt(LinkedList *list, int data) {
 
 
 int get(LinkedList *list, int pos) {
+    if (pos < 0 || pos >= list->size) {
+        return -1;
+    }
     return getNodeAtPos(list, pos)->data;
 }
 
@@ -193,6 +196,9 @@ int indexOfStartingAt(LinkedList *list, int data, int pos) {
 }
 
 int set(LinkedList *list, int pos, int data) {
+    if (pos < 0 || pos >=list->size) {
+        return -1;
+    }
     Node *node = getNodeAtPos(list, pos);
     int oldData = node->data;
     node->data = data;
@@ -201,7 +207,7 @@ int set(LinkedList *list, int pos, int data) {
 
 LinkedList *getSubList(LinkedList *list, int start, int stop) {
     if (start < 0 || start > list->size || stop < start || stop > list->size) {
-           return NULL;
+        return NULL;
     }
     LinkedList *subList = createLinkedList();
     Node *temp = list->first;
@@ -231,15 +237,17 @@ bool equals(LinkedList *list1, LinkedList *list2) {
 }
 
 void makeEmpty(LinkedList *list) {
-    Node *temp = list->first;
-    while (temp != NULL) {
-        Node *prevNode = temp;
-        temp = temp->next;
-        free(prevNode);
+    if (list != NULL) {
+        Node *temp = list->first;
+        while (temp != NULL) {
+            Node *prevNode = temp;
+            temp = temp->next;
+            free(prevNode);
+        }
+        list->first = NULL;
+        list->last = NULL;
+        list->size = 0;
     }
-    list->first = NULL;
-    list->last = NULL;
-    list->size = 0;
 }
 
 void destroyList(LinkedList *list) {
@@ -253,11 +261,52 @@ void destroyList(LinkedList *list) {
 }
 
 void removeRange(LinkedList *list, int start, int stop) {
+    if (start < 0 || start > list->size || stop < start || stop > list->size) {
+        return;
+    }
     if (start == 0) {
         for (int i = 0; i < stop; i++) {
             removeFirst(list);
         }
+    } else {
+        Node *temp = list->first;
+        int oldSize = list->size;
+        int newStop = stop == list->size ? stop - 1 : stop;
+        for (int i = 0; i < newStop; i++) {
+            if (i >= start) {
+                Node *currentNode = temp;
+                temp->next->prev = temp->prev;
+                temp->prev->next = temp->next;
+                free(currentNode);
+                list->size--;
+            }
+            temp = temp->next;
+        }
+        if (stop == oldSize) {
+            removeLast(list);
+        }
     }
+}
+
+LinkedListIterator *createLinkedListIterator(LinkedList *list) {
+    LinkedListIterator *iterator = (LinkedListIterator *) malloc(sizeof(LinkedListIterator));
+    iterator->list = list;
+    iterator->currentNode = list->first;
+    return iterator;
+}
+
+bool hasNext(LinkedListIterator *iterator) {
+    return iterator->currentNode != NULL;
+}
+
+int next(LinkedListIterator *iterator) {
+    int data = iterator->currentNode->data;
+    iterator->currentNode = iterator->currentNode->next;
+    return data;
+}
+
+void resetIterator(LinkedListIterator *iterator) {
+    iterator->currentNode = iterator->list->first;
 }
 
 void printList(LinkedList *list) {

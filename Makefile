@@ -1,7 +1,7 @@
 all: final
 
-final: main.o linkedlist.o
-	gcc main.o linkedlist.o -o final
+final: main.o linkedlist.o priorityqueue.o
+	gcc main.o linkedlist.o priorityqueue.o -o final
 	final.exe
 
 main.o: main.c
@@ -10,5 +10,8 @@ main.o: main.c
 linkedlist.o: linkedlist.c
 	gcc -c linkedlist.c
 
+priorityqueue.o: priorityqueue.c
+	gcc -c priorityqueue.c
+
 clean:
-	rm main.o linkedlist.o final
+	rm main.o linkedlist.o priorityqueue.o final
