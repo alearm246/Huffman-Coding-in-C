@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "priorityqueue.h": "c",
-        "linkedlist.h": "c"
+        "linkedlist.h": "c",
+        "huffman_tree_node.h": "c"
     }
 }

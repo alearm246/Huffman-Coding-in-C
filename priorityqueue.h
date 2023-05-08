@@ -1,3 +1,6 @@
+#ifndef PRIORITYQUEUE_H
+#define PRIORITYQUEUE_H
+
 #include <stdbool.h>
 #include "linkedlist.h"
 
@@ -12,3 +15,5 @@ int peek(PriorityQueue *queue);
 bool isEmpty(PriorityQueue *queue);
 int size(PriorityQueue *queue);
 void destroyPriorityQueue(PriorityQueue *queue);
+
+#endif // PRIORITYQUEUE_H
